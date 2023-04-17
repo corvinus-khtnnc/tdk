@@ -395,7 +395,7 @@ groc + xlab("FPR")+ylab("TPR")+
   theme_minimal()+ggtitle("ROC görbe logit modellre")
 
 
-# Modell pontosság növelése - optimális cut-off
+# optimális cut-off
 ROC <- plot.roc(test$Churn,test$Prob_logit3,main="ROC görbe logit modellre")
 bestcutoff<- coords(ROC,"best",best.method="closest.topleft")
 bestcutoff$sensitivity #0.7862
