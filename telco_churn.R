@@ -376,19 +376,24 @@ perf_indicators <- data.frame(
 rownames(perf_indicators) <- c("Accuracy", "Precision(1)", "Precision(0)", "Recall(1)", "Recall(0)")
 perf_indicators
 
-#4: ROC görbe és AUC mutató a logit modellre
+#4: ROC görbe és AUC mutató a két modellre
 library(ggplot2)
-ROC_inputs <- roc(test$Churn, test$Prob_logit3)
-ROC_inputs
+library(pROC)
+ROC_logit <- roc(test$Churn, test$Prob_logit3)
+ROC_logit$auc #0.8446
 
-groc <- ggroc(ROC_inputs,legacy.axes = T,color="red")
+predict_rf <- predict(forest, test, "prob")
+ROC_forest <- roc(test$Churn, predict_rf[,2])
+ROC_forest$auc #0.8314
+
+groc <- ggroc(ROC_logit,legacy.axes = T,color="red")
 groc
 
 # ROC görbe a logit modellre (11. ábra)
 groc + xlab("FPR")+ylab("TPR")+
   geom_segment(aes(x=0, xend=1, y=0, yend=1),color="darkgrey",linetype="dashed")+
   theme_minimal()+ggtitle("ROC görbe logit modellre")
-ROC_inputs$auc #0.8446
+
 
 # Modell pontosság növelése - optimális cut-off
 ROC <- plot.roc(test$Churn,test$Prob_logit3,main="ROC görbe logit modellre")
